@@ -21,7 +21,8 @@ import (
 type Provider struct {
 	Name     string       `json:"name" toml:"name" xml:"name" yaml:"name"`
 	Alias    types.String `json:"alias" toml:"alias" xml:"alias" yaml:"alias"`
-	Version  types.String `json:"version" toml:"version" xml:"version" yaml:"version"`
+	Version  types.String `jso
+	n:"version" toml:"version" xml:"version" yaml:"version"`
 	Position Position     `json:"-" toml:"-" xml:"-" yaml:"-"`
 }
 

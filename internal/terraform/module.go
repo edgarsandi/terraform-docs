@@ -329,13 +329,35 @@ func loadOutputValues(options *Options) (map[string]*output, error) {
 }
 
 func loadProviders(tfmodule *tfconfig.Module) []*Provider {
-	resources := []map[string]*tfconfig.Resource{tfmodule.ManagedResources, tfmodule.DataResources}
 	discovered := make(map[string]*Provider)
+
+	loadedProvidersConfig := []map[string]*tfconfig.ProviderConfig{tfmodule.ProviderConfigs}
+
+	for _, provider := range loadedProvidersConfig {
+		for _, p := range provider {
+			var version = ""
+			if rv, ok := tfmodule.RequiredProviders[p.Name]; ok && len(rv.VersionConstraints) > 0 {
+				version = strings.Join(rv.VersionConstraints, " ")
+			}
+			key := fmt.Sprintf("%s.%s", p.Name, p.Alias)
+			discovered[key] = &Provider{
+				Name:    p.Name,
+				Alias:   types.String(p.Alias),
+				Version: types.String(version),
+				Position: Position{
+					Filename: p.Pos.Filename,
+					Line:     p.Pos.Line,
+				},
+			}
+		}
+	}
+
+	resources := []map[string]*tfconfig.Resource{tfmodule.ManagedResources, tfmodule.DataResources}
 	for _, resource := range resources {
 		for _, r := range resource {
 			var version = ""
 			if rv, ok := tfmodule.RequiredProviders[r.Provider.Name]; ok && len(rv.VersionConstraints) > 0 {
-				version = strings.Join(rv.VersionConstraints, " ")
+				version = strings.Join(rv.VersionConstraints, ", ")
 			}
 			key := fmt.Sprintf("%s.%s", r.Provider.Name, r.Provider.Alias)
 			discovered[key] = &Provider{

@@ -5,6 +5,7 @@ go 1.16
 require (
 	github.com/BurntSushi/toml v0.3.1
 	github.com/hashicorp/go-plugin v1.4.0
+	github.com/hashicorp/terraform-config-inspect v0.0.0-20210209133302-4fd17a0faac2 // indirect
 	github.com/iancoleman/orderedmap v0.2.0
 	github.com/imdario/mergo v0.3.11
 	github.com/mitchellh/go-homedir v1.1.0
